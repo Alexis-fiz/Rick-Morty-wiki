@@ -54,7 +54,7 @@ export default function Characters() {
             </div>
             <ul className={styles.listContainer}>
               {charactersToShow.map((character: any) => (
-                <CharacterTile character={character} />
+                <CharacterTile key={character.id} character={character} />
               ))}
             </ul>
         </div>

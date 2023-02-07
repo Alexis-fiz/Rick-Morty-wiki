@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(32, 35, 41);
+}
+
+.heroImage {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+}
+
+.imageContainer {
+    z-index: 1;
+}

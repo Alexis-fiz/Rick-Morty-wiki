@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import styles from './Characters.module.css'
 
 export default function CharacterTile({character}: any) {
-    console.log(character);
     const statusColor = character.status === 'Alive' ? {backgroundColor: 'rgb(85, 204, 68)'}: {backgroundColor: 'rgb(214, 61, 46)'};
     return (
         <li key={character.id} className={styles.listItem} >
@@ -17,6 +16,8 @@ export default function CharacterTile({character}: any) {
             <p className={styles.subTitle}>Last known location:</p>
             <Link className={styles.tileLink} to={`/characters/${character.id}`}>{character.location.name}</Link>
             <p className={styles.subTitle}>First seen in:</p>
+            <Link className={styles.tileLink} to={`/characters/${character.id}`}>{character.firstEpisode.name}</Link>
+
           </div>
         </li>
     )

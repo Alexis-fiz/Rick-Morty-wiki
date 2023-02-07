@@ -7,10 +7,24 @@ export async function getCharacters(params) {
         params
     })
     const { info, results} = response.data;
-    return {characters: results, info}
+    const updatedResults = await Promise.all(results.map(async character => {
+        const [firstEpidodeUrl] = character.episode;
+        const episodeDetails = await getResource(firstEpidodeUrl);
+        return {...character, firstEpisode: episodeDetails}
+    }));
+    return {characters: updatedResults, info}
+}
+
+export async function getCharacter(id) {
+    const response = await axios.get(`${API_URL}/character/${id}`);
+    const {data: character} = response;
+    const episodeList = await Promise.all(character.episode.map(async ep => {
+        return await getResource(ep);
+    }));
+    return {...character, episodeList};
 }
 
 export async function getResource(url) {
-    const response = await axios.get(`${url}`)
+    const response = await axios.get(url);
     return response.data;
 }
