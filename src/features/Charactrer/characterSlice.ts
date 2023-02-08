@@ -29,7 +29,11 @@ export const getCharacterAsync = createAsyncThunk(
 export const characterSlice = createSlice({
   name: 'character',
   initialState,
-  reducers: {},
+  reducers: {
+    selectCharacter: (state, action) => {
+      state.character = action.payload;
+    },
+  },
   // The `reducers` field lets us define reducers and generate associated actions
   // reducers: {
   //   increment: (state) => {
@@ -64,3 +68,4 @@ export const characterSlice = createSlice({
 
 
 export default characterSlice.reducer;
+export const { selectCharacter } = characterSlice.actions;

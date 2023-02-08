@@ -1,8 +1,7 @@
 import { useEffect } from "react"
 import { useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { getCharacterAsync } from './characterSlice';
-
+import { getCharacterAsync, selectCharacter } from './characterSlice';
 import styles from './Character.module.css'
 
 export default function Character() {
@@ -11,14 +10,23 @@ export default function Character() {
   
   const dispatch = useAppDispatch();
   const character = useAppSelector((state) => state.character.character);
+  const allCharacters = useAppSelector((state) => state.characters.allCharacters);
+  const characters = Object.values(allCharacters).flat();
 
+  
   useEffect(() => {
+    console.log(character);
+    const characterFound = characters.find((char: any) => char.id === character.id);
+    console.log(characterFound);
+    if(characterFound) {
+      dispatch(selectCharacter(characterFound))
+      return;
+    }
     dispatch(getCharacterAsync(characterId))
   }, [])
-
+ 
   if (!character) return null;
 
-  console.log('character', character);
     return (
         <section className={styles.container}>
           <div className={styles.heroImage}>

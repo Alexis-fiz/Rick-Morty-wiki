@@ -18,6 +18,10 @@ export async function getCharacters(params) {
 export async function getCharacter(id) {
     const response = await axios.get(`${API_URL}/character/${id}`);
     const {data: character} = response;
+    return getEpisodesForCharacter(character)
+}
+
+export async function getEpisodesForCharacter(character) {
     const episodeList = await Promise.all(character.episode.map(async ep => {
         return await getResource(ep);
     }));
