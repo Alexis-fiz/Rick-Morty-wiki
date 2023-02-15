@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { getAllCharactersAsync } from './charactersSlice';
+import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
 
 import CharacterTile from './CharacterTile'
 
 import styles from './Characters.module.css';
 
 export default function Characters() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [charactersToShow, setCharactersToShow] = useState<any>([]);
+    const initialPage = 1;
     const dispatch = useAppDispatch();
+    const page = useAppSelector((state) => state.characters.page);
     const characters = useAppSelector((state) => state.characters.characters);
     const allCharacters = useAppSelector((state) => state.characters.allCharacters);
 
@@ -17,19 +17,15 @@ export default function Characters() {
     const {pages, next, prev} = info;  
 
     useEffect(() => {
-         dispatch(getAllCharactersAsync({page: currentPage}));
+         dispatch(getAllCharactersAsync({page: initialPage}));
     }, [])
-
-    useEffect(()=>{
-        setCharactersToShow(characters);
-    }, [characters])
 
     function onClickPagination(newPage: number) {
         if(newPage <= 0 || newPage > pages) return;
-        setCurrentPage(newPage);
-        if(allCharacters[newPage]) {
-            setCharactersToShow(allCharacters[newPage])
-            return;
+        const charactersInPage = allCharacters[newPage];
+        if(charactersInPage) {
+          dispatch(setShowCharacters({page: newPage, characters: charactersInPage}));
+          return;
         }
         dispatch(getAllCharactersAsync({page: newPage}))
     }         
@@ -40,9 +36,9 @@ export default function Characters() {
             <div className={styles.heroWrapper}>
                 <h1 className={styles.heroTitle}>The Rick and Morty Wiki</h1>
                 <div className={styles.paginationContainer}>
-                  <button className={styles.paginationBtn} onClick={() => onClickPagination(currentPage - 1)} disabled={!prev} >Prev</button>
+                  <button className={styles.paginationBtn} onClick={() => onClickPagination(page - 1)} disabled={!prev} >Prev</button>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(pages)}>{pages}</button>
-                  <button className={styles.paginationBtn} onClick={() => onClickPagination(currentPage + 1)} disabled={!next}>Next</button>
+                  <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)} disabled={!next}>Next</button>
                 </div>
                 <div className={styles.heroImage}>
                   <svg width="378" height="376" viewBox="0 0 378 376" fill="#64ffda">
@@ -53,7 +49,7 @@ export default function Characters() {
                 </div>
             </div>
             <ul className={styles.listContainer}>
-              {charactersToShow.map((character: any) => (
+              {characters.map((character: any) => (
                 <CharacterTile key={character.id} character={character} />
               ))}
             </ul>

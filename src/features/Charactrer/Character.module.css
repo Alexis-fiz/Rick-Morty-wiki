@@ -1,7 +1,9 @@
 .container {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 500px 500px;
+  column-gap: 64px;
   justify-content: center;
+  align-items: center;
   position: relative;
   height: 100vh;
   width: 100vw;
@@ -9,11 +11,77 @@
 }
 
 .heroImage {
-  display: flex;
   position: absolute;
-  justify-content: center;
+  right: 20%;
 }
 
 .imageContainer {
     z-index: 1;
+    border: 2px solid #F90;
+    border-radius: 24px;
+    padding: 1rem;
+}
+
+.image {
+  width: 464px;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+}
+
+.rightContent {
+  background-color: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  color :rgb(245, 245, 245);
+  background-color: rgb(39, 43, 51);
+  border: 1px solid #F90;
+  z-index: 2;
+}
+
+.infoText {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(245, 245, 245);
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  padding: 24px;
+}
+
+.infoText h1, h2 {
+  margin: 0;
+}
+
+.episodeList {
+  max-height: 300px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+}
+
+.episodeList::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: transparent;
+}
+
+.episodeList::-webkit-scrollbar
+{
+	width: 10px;
+  height: 100px;
+	background-color: transparent;
+}
+
+.episodeList::-webkit-scrollbar-thumb
+{
+	background-color: #F90;
+  height: 100px;	
+	background-image: -webkit-linear-gradient(45deg,
+	                      rgba(255, 255, 255, .2) 25%,
+											  transparent 25%,
+											  transparent 50%,
+											  rgba(255, 255, 255, .2) 50%,
+											  rgba(255, 255, 255, .2) 75%,
+											  transparent 75%,
+											  transparent)
 }

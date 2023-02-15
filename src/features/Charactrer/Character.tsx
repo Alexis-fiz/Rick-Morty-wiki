@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { getCharacterAsync, selectCharacter } from './characterSlice';
 import styles from './Character.module.css'
+import { getEpisodesForCharacter } from "../../api/characters";
 
 export default function Character() {
   const { pathname } = useLocation();
@@ -15,14 +16,16 @@ export default function Character() {
 
   
   useEffect(() => {
-    console.log(character);
-    const characterFound = characters.find((char: any) => char.id === character.id);
-    console.log(characterFound);
-    if(characterFound) {
-      dispatch(selectCharacter(characterFound))
-      return;
+    async function getData() {
+      const characterFound = characters.find((char: any) => char.id === character.id);
+      if(characterFound) {
+        const updatedCharacter = await getEpisodesForCharacter(characterFound)
+        dispatch(selectCharacter(updatedCharacter))
+        return;
+      }
+      dispatch(getCharacterAsync(characterId))
     }
-    dispatch(getCharacterAsync(characterId))
+    getData();
   }, [])
  
   if (!character) return null;
@@ -37,9 +40,27 @@ export default function Character() {
             </svg>
           </div>
           <div className={styles.imageContainer}>
-            <img src={character.image} alt={character.name} />
+            <img className={styles.image} src={character.image} alt={character.name} />
+            <div className={styles.infoText}>
+              <h1>{character.name}</h1>
+              <h2>{character.id}</h2>
+            </div>
           </div>
-          {character.name}
+          <div className={styles.rightContent}>
+            <p>Subject's species: {character.species}</p>
+            <p>Subject's gender: {character.gender}</p>
+            <p>Place of Origin: {character.origin.name}</p>
+            <h3>Last seen: </h3>
+            <ul className={styles.episodeList}>
+            {character?.episodeList?.map((episode: any) => (
+              <li key={episode.id} className={styles.episodeItem}>
+                <p>{episode.episode}: {episode.name} - {episode.air_date}</p>
+                <p></p>
+                <p></p>
+              </li>
+            ))}
+            </ul>
+          </div>
         </section>
     )
 }
