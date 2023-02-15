@@ -1,8 +1,8 @@
 import React from 'react';
 import { Routes, Route } from "react-router-dom";
 import { Counter } from './features/counter/Counter';
-import Characters from './features/Characters/Characters';
-import Character from './features/Charactrer/Character';
+import Characters from './features/characters/Characters';
+import Character from './features/charactrer/Character';
 
 import './App.css';
 
