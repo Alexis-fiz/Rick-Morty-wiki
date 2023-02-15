@@ -1,13 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+// import { useHistory } from "react-router-dom"
+import debounce from 'lodash.debounce';
+import Select from 'react-select';
+
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
 
 import CharacterTile from './CharacterTile'
-
 import styles from './Characters.module.css';
 
+const options = [
+  {label: 'Alive', value: 'alive'},
+  {label: 'Dead', value: 'dead'},
+  {label: 'Unknown', value: 'unknown'},
+  {label: 'No select', value: undefined}
+]
+const initialPage = 1;
+
 export default function Characters() {
-    const initialPage = 1;
+    const [statusSelected, setStatusSelected] = useState<any>();
+    const [searchValue, setSearchValue] = useState('');
+
+    // const history = useHistory()
+
     const dispatch = useAppDispatch();
     const page = useAppSelector((state) => state.characters.page);
     const characters = useAppSelector((state) => state.characters.characters);
@@ -15,7 +30,7 @@ export default function Characters() {
 
     const info = useAppSelector((state) => state.characters.info);
     const {pages, next, prev} = info;  
-
+    
     useEffect(() => {
          dispatch(getAllCharactersAsync({page: initialPage}));
     }, [])
@@ -23,18 +38,44 @@ export default function Characters() {
     function onClickPagination(newPage: number) {
         if(newPage <= 0 || newPage > pages) return;
         const charactersInPage = allCharacters[newPage];
-        if(charactersInPage) {
+        if(charactersInPage && (!statusSelected?.value && !searchValue)) {
           dispatch(setShowCharacters({page: newPage, characters: charactersInPage}));
           return;
         }
-        dispatch(getAllCharactersAsync({page: newPage}))
-    }         
+        dispatch(getAllCharactersAsync({page: newPage, name: searchValue, status: statusSelected?.value}))
+    }
+    
+    function onChangeStatus(status: any) {
+      setStatusSelected(status);
+      dispatch(getAllCharactersAsync({name: searchValue, status: status?.value, page: initialPage}))
+    }
 
+    function handleDebouncefn(value: any) {
+      if (!value.length) dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}))
+      if (value.length < 4) return;
+      console.log('call is made');
+      dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}))
+    }
 
+    const debouncedChangeHandler = useCallback(
+      debounce(handleDebouncefn, 500)
+    , []);
+
+    function onChangeInput(e: any) {
+      const { value } = e.target;
+      setSearchValue(value);
+      debouncedChangeHandler(value);
+    }
+  
     return (
         <div>
             <div className={styles.heroWrapper}>
                 <h1 className={styles.heroTitle}>The Rick and Morty Wiki</h1>
+                <div className={styles.filterContainer}>
+                  <input type="text" className={styles.filterInput} value={searchValue} onChange={onChangeInput} />
+                  <button className={styles.filterButton}></button>
+                  <Select options={options} onChange={onChangeStatus} value={statusSelected}/>
+                </div>
                 <div className={styles.paginationContainer}>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(page - 1)} disabled={!prev} >Prev</button>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(pages)}>{pages}</button>

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getCharacters, getCharacter } from '../../api/characters';
+import { getCharacters } from '../../api/characters';
 
 export interface CharactersState {
   info: any;
@@ -51,7 +51,7 @@ export const charactersSlice = createSlice({
       })
       .addCase(getAllCharactersAsync.rejected, (state) => {
         state.loading = false;
-      })
+      });
   },
 });
 
