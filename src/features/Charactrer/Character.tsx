@@ -1,13 +1,12 @@
 import { useEffect } from "react"
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { getCharacterAsync, selectCharacter } from './characterSlice';
 import styles from './Character.module.css'
 import { getEpisodesForCharacter } from "../../api/characters";
 
 export default function Character() {
-  const { pathname } = useLocation();
-  const characterId = pathname.split('/')[2];
+  const { id } = useParams();
   
   const dispatch = useAppDispatch();
   const character = useAppSelector((state) => state.character.character);
@@ -23,7 +22,7 @@ export default function Character() {
         dispatch(selectCharacter(updatedCharacter))
         return;
       }
-      dispatch(getCharacterAsync(characterId))
+      dispatch(getCharacterAsync(id))
     }
     getData();
   }, [])

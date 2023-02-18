@@ -18,7 +18,7 @@ const initialState: CharacterState = {
 // typically used to make async requests.
 export const getCharacterAsync = createAsyncThunk(
   'character/fetchCharacter',
-  async (id: string) => {
+  async (id: string | undefined) => {
     const character = await getCharacter(id);
     // The value we  becomes the `fulfilled` action payload
     return character;

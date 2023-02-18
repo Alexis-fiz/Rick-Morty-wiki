@@ -1,8 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
-// import { useHistory } from "react-router-dom"
 import debounce from 'lodash.debounce';
 import Select from 'react-select';
-
+import { useSearchParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
 
@@ -19,9 +18,9 @@ const initialPage = 1;
 
 export default function Characters() {
     const [statusSelected, setStatusSelected] = useState<any>();
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState<any>('');
 
-    // const history = useHistory()
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const dispatch = useAppDispatch();
     const page = useAppSelector((state) => state.characters.page);
@@ -32,11 +31,19 @@ export default function Characters() {
     const {pages, next, prev} = info;  
     
     useEffect(() => {
-         dispatch(getAllCharactersAsync({page: initialPage}));
+      const currentStatus = searchParams.get('status');
+      const currentPage = parseInt(searchParams.get('page')!) || initialPage;
+      const statusFound = options.find(st => st.value === currentStatus);
+      const currentQuery = searchParams.get('name');
+
+      setStatusSelected(statusFound);
+      setSearchValue(currentQuery);
+      dispatch(getAllCharactersAsync({page: currentPage, name: currentQuery, status: currentStatus}));
     }, [])
 
     function onClickPagination(newPage: number) {
         if(newPage <= 0 || newPage > pages) return;
+        setSearchParams({ page: newPage.toString(), name: searchValue, status: statusSelected?.value })
         const charactersInPage = allCharacters[newPage];
         if(charactersInPage && (!statusSelected?.value && !searchValue)) {
           dispatch(setShowCharacters({page: newPage, characters: charactersInPage}));
@@ -48,12 +55,21 @@ export default function Characters() {
     function onChangeStatus(status: any) {
       setStatusSelected(status);
       dispatch(getAllCharactersAsync({name: searchValue, status: status?.value, page: initialPage}))
+      if(!status.value) {
+        setSearchParams({  page: page.toString(), name: searchValue });
+        return;
+      }
+      setSearchParams({  page: page.toString(), name: searchValue, status: status.value });
     }
 
     function handleDebouncefn(value: any) {
-      if (!value.length) dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}))
+      if (!value.length) {
+        dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}));
+        setSearchParams({page: initialPage.toString(), status: statusSelected?.value})
+        return;
+      }
       if (value.length < 4) return;
-      console.log('call is made');
+      setSearchParams({page: initialPage.toString(), name: value, status: statusSelected?.value})
       dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}))
     }
 
