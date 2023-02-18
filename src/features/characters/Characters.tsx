@@ -66,6 +66,8 @@ export default function Characters() {
       setSearchValue(value);
       debouncedChangeHandler(value);
     }
+
+
   
     return (
         <div>
@@ -73,11 +75,14 @@ export default function Characters() {
                 <h1 className={styles.heroTitle}>The Rick and Morty Wiki</h1>
                 <div className={styles.filterContainer}>
                   <input type="text" className={styles.filterInput} value={searchValue} onChange={onChangeInput} />
-                  <button className={styles.filterButton}></button>
-                  <Select options={options} onChange={onChangeStatus} value={statusSelected}/>
+                  <Select options={options} value={statusSelected} onChange={onChangeStatus} />
                 </div>
                 <div className={styles.paginationContainer}>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(page - 1)} disabled={!prev} >Prev</button>
+                  <button className={styles.paginationBtn} onClick={() => onClickPagination(1)}>1</button>
+                  {page > 1 && <button className={styles.paginationBtn} onClick={() => onClickPagination(page - 1)}>{page - 1}</button>}
+                  <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)}>{page + 1}</button>
+                  <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 2)}>{page + 2}</button>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(pages)}>{pages}</button>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)} disabled={!next}>Next</button>
                 </div>
