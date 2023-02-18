@@ -79,6 +79,20 @@
   cursor: pointer;
 }
 
+.currentPage {
+  outline: 0;
+  border-color: rgb(255, 152, 0);
+  background-color: #0a192f;
+  color: rgb(255, 152, 0);
+  min-width: 4rem;
+  font-size: 1.25rem;
+  padding: 0.5rem 1.25rem;
+  background-color: transparent;
+  border-radius: 0.25rem;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
 .listContainer {
   display: flex;
   flex-wrap: wrap;

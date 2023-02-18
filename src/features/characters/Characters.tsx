@@ -67,8 +67,6 @@ export default function Characters() {
       debouncedChangeHandler(value);
     }
 
-
-  
     return (
         <div>
             <div className={styles.heroWrapper}>
@@ -79,10 +77,11 @@ export default function Characters() {
                 </div>
                 <div className={styles.paginationContainer}>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(page - 1)} disabled={!prev} >Prev</button>
-                  <button className={styles.paginationBtn} onClick={() => onClickPagination(1)}>1</button>
+                  {page > 2 && <button className={styles.paginationBtn} onClick={() => onClickPagination(page - 2)}>{page - 2}</button>}
                   {page > 1 && <button className={styles.paginationBtn} onClick={() => onClickPagination(page - 1)}>{page - 1}</button>}
-                  <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)}>{page + 1}</button>
-                  <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 2)}>{page + 2}</button>
+                  <button className={styles.currentPage} disabled >{page}</button>
+                  {page + 1 < pages && <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)}>{page + 1}</button>}
+                  {page + 2 < pages && <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 2)}>{page + 2}</button>}
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(pages)}>{pages}</button>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)} disabled={!next}>Next</button>
                 </div>
