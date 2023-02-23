@@ -8,7 +8,7 @@ import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
 import CharacterTile from './CharacterTile'
 import styles from './Characters.module.css';
 
-import { IOption, StatusLabel, StatusValue } from '../../helpers/types';
+import { IOption, Nullable, StatusLabel, StatusValue } from '../../helpers/types';
 
 const options = [
   {label: StatusLabel.ANY, value: StatusValue.ANY},
@@ -33,7 +33,7 @@ export default function Characters() {
     const info = useAppSelector((state) => state.characters.info);
     const {pages, next, prev} = info;  
 
-    function getUrlParams(_page: any = undefined, _query: any = undefined, _status: any = undefined) {
+    function getUrlParams(_page: Nullable<number> = null, _query: Nullable<string> = null, _status: Nullable<string> = null) {
       let paramsUrl: any = {page: _page};
       if (_query) {
         paramsUrl = {...paramsUrl, name: _query};
@@ -49,11 +49,11 @@ export default function Characters() {
       const currentPage = parseInt(searchParams.get('page')!) || initialPage;
       const statusFound = options.find(st => st.value === currentStatus);
       const currentQuery = searchParams.get('name') || '';
-
+      console.log('useEffect');
       setStatusSelected(statusFound!);
       setSearchValue(currentQuery);
       dispatch(getAllCharactersAsync(getUrlParams(currentPage, currentQuery, currentStatus)));
-    }, [])
+    }, [dispatch, searchParams])
 
     function onClickPagination(newPage: number) {
         if(newPage <= 0 || newPage > pages) return;
