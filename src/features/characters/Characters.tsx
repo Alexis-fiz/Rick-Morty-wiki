@@ -34,24 +34,12 @@ export default function Characters() {
     const {pages, next, prev} = info;  
 
     function getUrlParams(_page: any = undefined, _query: any = undefined, _status: any = undefined) {
-      const pageParsed = searchParams.get('page') ? parseInt(searchParams.get('page')!) : initialPage;
-      
-      const currentPage = _page || pageParsed;
-      const currentQuery = _query || searchParams.get('name');
-      const currentStatus = _status || searchParams.get('status');
-
-      console.log('_page', _page, '_query', _query, '_status', _status);
-      console.log('searchParams page', pageParsed, 'searchParams name', searchParams.get('name'), 'searchParams status', searchParams.get('status'));
-      console.log('currentPage', currentPage, 'currentQuery', currentQuery, 'currentStatus', currentStatus);
-      console.log('----------------------------------------------------------------');
-
-
-      let paramsUrl: any = {page: currentPage};
-      if (currentQuery) {
-        paramsUrl = {...paramsUrl, name: currentQuery};
+      let paramsUrl: any = {page: _page};
+      if (_query) {
+        paramsUrl = {...paramsUrl, name: _query};
       };
-      if (currentStatus) {
-        paramsUrl = {...paramsUrl, status: currentStatus};
+      if (_status) {
+        paramsUrl = {...paramsUrl, status: _status};
       };
       return paramsUrl;
     }
@@ -78,26 +66,23 @@ export default function Characters() {
         dispatch(getAllCharactersAsync(getUrlParams(newPage, searchValue, statusSelected?.value)))
     }
     
-    function onChangeStatus(status: SingleValue<IOption>) {
+    async function onChangeStatus(status: SingleValue<IOption>) {
       setStatusSelected(status);
       const params = getUrlParams(initialPage, searchValue, status?.value);
-      dispatch(getAllCharactersAsync(params));
-      if(!status?.value) {
-        setSearchParams({  page: initialPage.toString(), name: searchValue });
-        return;
-      }
       setSearchParams(params);
+      dispatch(getAllCharactersAsync(params));
     }
 
-    function handleDebouncefn(value: string) {
+    function handleDebouncefn(value: string, status: SingleValue<IOption>) {
+      const params = getUrlParams(initialPage, value, status?.value);
       if (!value.length) {
-        dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}));
-        setSearchParams({page: initialPage.toString(), status: statusSelected?.value!})
+        dispatch(getAllCharactersAsync(params));
+        setSearchParams(params)
         return;
       }
       if (value.length < 4) return;
-      setSearchParams({page: initialPage.toString(), name: value, status: statusSelected?.value!})
-      dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}))
+      setSearchParams(params)
+      dispatch(getAllCharactersAsync(params))
     }
 
     const debouncedChangeHandler = useCallback(
@@ -107,7 +92,7 @@ export default function Characters() {
     function onChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
       const { value } = e.target;
       setSearchValue(value);
-      debouncedChangeHandler(value);
+      debouncedChangeHandler(value, statusSelected);
     }
 
     return (
