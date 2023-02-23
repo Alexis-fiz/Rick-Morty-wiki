@@ -57,13 +57,14 @@ export default function Characters() {
 
     function onClickPagination(newPage: number) {
         if(newPage <= 0 || newPage > pages) return;
-        setSearchParams(getUrlParams(newPage, searchValue, statusSelected?.value!))
+        const params = getUrlParams(newPage, searchValue, statusSelected?.value);
+        setSearchParams(params)
         const charactersInPage = allCharacters[newPage];
         if(charactersInPage && (!statusSelected?.value && !searchValue)) {
           dispatch(setShowCharacters({page: newPage, characters: charactersInPage}));
           return;
         }
-        dispatch(getAllCharactersAsync(getUrlParams(newPage, searchValue, statusSelected?.value)))
+        dispatch(getAllCharactersAsync(params));
     }
     
     async function onChangeStatus(status: SingleValue<IOption>) {
