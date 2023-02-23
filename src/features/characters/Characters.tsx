@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
-import Select from 'react-select';
+import Select, { SingleValue } from 'react-select';
 import { useSearchParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
@@ -8,17 +8,20 @@ import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
 import CharacterTile from './CharacterTile'
 import styles from './Characters.module.css';
 
+import { IOption } from '../../helpers/types';
+
 const options = [
+  {label: 'Any', value: ''},
   {label: 'Alive', value: 'alive'},
   {label: 'Dead', value: 'dead'},
   {label: 'Unknown', value: 'unknown'},
-  {label: 'No select', value: undefined}
 ]
 const initialPage = 1;
+const defaultOption = options[0];
 
 export default function Characters() {
-    const [statusSelected, setStatusSelected] = useState<any>();
-    const [searchValue, setSearchValue] = useState<any>('');
+    const [statusSelected, setStatusSelected] = useState<SingleValue<IOption>>(defaultOption);
+    const [searchValue, setSearchValue] = useState<string>('');
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -29,47 +32,71 @@ export default function Characters() {
 
     const info = useAppSelector((state) => state.characters.info);
     const {pages, next, prev} = info;  
+
+    function getUrlParams(_page: any = undefined, _query: any = undefined, _status: any = undefined) {
+      const pageParsed = searchParams.get('page') ? parseInt(searchParams.get('page')!) : initialPage;
+      
+      const currentPage = _page || pageParsed;
+      const currentQuery = _query || searchParams.get('name');
+      const currentStatus = _status || searchParams.get('status');
+
+      console.log('_page', _page, '_query', _query, '_status', _status);
+      console.log('searchParams page', pageParsed, 'searchParams name', searchParams.get('name'), 'searchParams status', searchParams.get('status'));
+      console.log('currentPage', currentPage, 'currentQuery', currentQuery, 'currentStatus', currentStatus);
+      console.log('----------------------------------------------------------------');
+
+
+      let paramsUrl: any = {page: currentPage};
+      if (currentQuery) {
+        paramsUrl = {...paramsUrl, name: currentQuery};
+      };
+      if (currentStatus) {
+        paramsUrl = {...paramsUrl, status: currentStatus};
+      };
+      return paramsUrl;
+    }
     
     useEffect(() => {
       const currentStatus = searchParams.get('status');
       const currentPage = parseInt(searchParams.get('page')!) || initialPage;
       const statusFound = options.find(st => st.value === currentStatus);
-      const currentQuery = searchParams.get('name');
+      const currentQuery = searchParams.get('name') || '';
 
-      setStatusSelected(statusFound);
+      setStatusSelected(statusFound!);
       setSearchValue(currentQuery);
-      dispatch(getAllCharactersAsync({page: currentPage, name: currentQuery, status: currentStatus}));
+      dispatch(getAllCharactersAsync(getUrlParams(currentPage, currentQuery, currentStatus)));
     }, [])
 
     function onClickPagination(newPage: number) {
         if(newPage <= 0 || newPage > pages) return;
-        setSearchParams({ page: newPage.toString(), name: searchValue, status: statusSelected?.value })
+        setSearchParams(getUrlParams(newPage, searchValue, statusSelected?.value!))
         const charactersInPage = allCharacters[newPage];
         if(charactersInPage && (!statusSelected?.value && !searchValue)) {
           dispatch(setShowCharacters({page: newPage, characters: charactersInPage}));
           return;
         }
-        dispatch(getAllCharactersAsync({page: newPage, name: searchValue, status: statusSelected?.value}))
+        dispatch(getAllCharactersAsync(getUrlParams(newPage, searchValue, statusSelected?.value)))
     }
     
-    function onChangeStatus(status: any) {
+    function onChangeStatus(status: SingleValue<IOption>) {
       setStatusSelected(status);
-      dispatch(getAllCharactersAsync({name: searchValue, status: status?.value, page: initialPage}))
-      if(!status.value) {
-        setSearchParams({  page: page.toString(), name: searchValue });
+      const params = getUrlParams(initialPage, searchValue, status?.value);
+      dispatch(getAllCharactersAsync(params));
+      if(!status?.value) {
+        setSearchParams({  page: initialPage.toString(), name: searchValue });
         return;
       }
-      setSearchParams({  page: page.toString(), name: searchValue, status: status.value });
+      setSearchParams(params);
     }
 
-    function handleDebouncefn(value: any) {
+    function handleDebouncefn(value: string) {
       if (!value.length) {
         dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}));
-        setSearchParams({page: initialPage.toString(), status: statusSelected?.value})
+        setSearchParams({page: initialPage.toString(), status: statusSelected?.value!})
         return;
       }
       if (value.length < 4) return;
-      setSearchParams({page: initialPage.toString(), name: value, status: statusSelected?.value})
+      setSearchParams({page: initialPage.toString(), name: value, status: statusSelected?.value!})
       dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}))
     }
 
@@ -77,7 +104,7 @@ export default function Characters() {
       debounce(handleDebouncefn, 500)
     , []);
 
-    function onChangeInput(e: any) {
+    function onChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
       const { value } = e.target;
       setSearchValue(value);
       debouncedChangeHandler(value);
