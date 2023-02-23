@@ -8,13 +8,13 @@ import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
 import CharacterTile from './CharacterTile'
 import styles from './Characters.module.css';
 
-import { IOption } from '../../helpers/types';
+import { IOption, StatusLabel, StatusValue } from '../../helpers/types';
 
 const options = [
-  {label: 'Any', value: ''},
-  {label: 'Alive', value: 'alive'},
-  {label: 'Dead', value: 'dead'},
-  {label: 'Unknown', value: 'unknown'},
+  {label: StatusLabel.ANY, value: StatusValue.ANY},
+  {label: StatusLabel.ALIVE, value: StatusValue.ALIVE},
+  {label: StatusLabel.DEAD, value: StatusValue.DEAD},
+  {label: StatusLabel.UNKOWN, value: StatusValue.UNKOWN},
 ]
 const initialPage = 1;
 const defaultOption = options[0];

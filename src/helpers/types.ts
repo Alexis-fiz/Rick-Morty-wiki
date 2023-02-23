@@ -48,3 +48,17 @@ export interface IParams {
     pages: number | string;
     status: string;
 }
+
+export enum StatusLabel {
+  ANY = 'Any',
+  ALIVE = 'Alive',
+  DEAD = 'Dead',
+  UNKOWN = 'Unkown',
+}
+
+export enum StatusValue {
+  ANY = '',
+  ALIVE = 'alive',
+  DEAD = 'dead',
+  UNKOWN = 'unkown',
+}
