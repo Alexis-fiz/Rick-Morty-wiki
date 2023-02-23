@@ -111,7 +111,7 @@ export default function Characters() {
                   <button className={styles.currentPage} disabled >{page}</button>
                   {page + 1 < pages && <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)}>{page + 1}</button>}
                   {page + 2 < pages && <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 2)}>{page + 2}</button>}
-                  <button className={styles.paginationBtn} onClick={() => onClickPagination(pages)}>{pages}</button>
+                  {page !== pages && <button className={styles.paginationBtn} onClick={() => onClickPagination(pages)}>{pages}</button>}
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)} disabled={!next}>Next</button>
                 </div>
                 <div className={styles.heroImage}>
