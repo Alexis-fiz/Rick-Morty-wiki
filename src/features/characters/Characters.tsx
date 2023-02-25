@@ -49,7 +49,6 @@ export default function Characters() {
       const currentPage = parseInt(searchParams.get('page')!) || initialPage;
       const statusFound = options.find(st => st.value === currentStatus);
       const currentQuery = searchParams.get('name') || '';
-      console.log('useEffect');
       setStatusSelected(statusFound!);
       setSearchValue(currentQuery);
       dispatch(getAllCharactersAsync(getUrlParams(currentPage, currentQuery, currentStatus)));
