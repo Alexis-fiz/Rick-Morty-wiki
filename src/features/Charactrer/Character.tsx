@@ -4,20 +4,20 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { getCharacterAsync, selectCharacter } from './characterSlice';
 import styles from './Character.module.css';
 import { getEpisodesForCharacter } from "../../api/characters";
-import { ICharacter } from "../../helpers/types";
+import { ICharacter, IEpisode, Nullable } from "../../helpers/types";
 
 export default function Character() {
   const { id } = useParams();
   
   const dispatch = useAppDispatch();
-  const character: ICharacter = useAppSelector((state) => state.character.character);
+  const character: Nullable<ICharacter> = useAppSelector((state) => state.character.character);
   const allCharacters: Record<string, ICharacter[]> = useAppSelector((state) => state.characters.allCharacters);
   const characters = Object.values(allCharacters).flat();
 
   
   useEffect(() => {
     async function getData() {
-      const characterFound = characters.find((char: ICharacter) => char.id === character.id);
+      const characterFound = characters.find((char: ICharacter) => char.id === character?.id);
       if(characterFound) {
         const updatedCharacter = await getEpisodesForCharacter(characterFound)
         dispatch(selectCharacter(updatedCharacter))
@@ -52,7 +52,7 @@ export default function Character() {
             <p>Place of Origin: {character.origin.name}</p>
             <h3>Last seen: </h3>
             <ul className={styles.episodeList}>
-            {character?.episodeList?.map((episode: any) => (
+            {character?.episodeList?.map((episode: IEpisode) => (
               <li key={episode.id} className={styles.episodeItem}>
                 <p>{episode.episode}: {episode.name} - {episode.air_date}</p>
                 <p></p>

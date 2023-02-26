@@ -8,7 +8,7 @@ import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
 import CharacterTile from './CharacterTile';
 import styles from './Characters.module.css';
 
-import { IOption, Nullable, StatusLabel, StatusValue } from '../../helpers/types';
+import { ICharacter, IOption, Nullable, StatusLabel, StatusValue } from '../../helpers/types';
 
 const options = [
   {label: StatusLabel.ANY, value: StatusValue.ANY},
@@ -123,7 +123,7 @@ export default function Characters() {
                 </div>
             </div>
             <ul className={styles.listContainer}>
-              {characters.map((character: any) => (
+              {characters.map((character: ICharacter) => (
                 <CharacterTile key={character.id} character={character} />
               ))}
             </ul>

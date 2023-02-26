@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getCharacter } from '../../api/characters';
+import { ICharacter, Nullable } from '../../helpers/types';
 
 export interface CharacterState {
   loading: boolean;
-  character: any | null;
+  character: Nullable<ICharacter>;
 }
 
 const initialState: CharacterState = {
