@@ -102,7 +102,32 @@ export default function Characters() {
                 <h1 className={styles.heroTitle}>The Rick and Morty Wiki</h1>
                 <div className={styles.filterContainer}>
                   <input type="text" className={styles.filterInput} value={searchValue} onChange={onChangeInput} />
-                  <Select options={options} value={statusSelected} onChange={onChangeStatus} />
+                  <Select
+                    options={options} 
+                    value={statusSelected} 
+                    onChange={onChangeStatus}
+                    styles={{
+                      control: (baseStyles) => ({
+                        ...baseStyles,
+                        borderRadius: '0 26px 26px 0',
+                        border: 0,
+                        outline: 0
+                      }),
+                      valueContainer: (provided) => ({
+                        ...provided,
+                        height: '50px',
+                        width: '100px'
+                      }),
+                    }}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary25: 'rgb(255, 152, 0)',
+                        primary: '#0a192f',
+                      },
+                    })}
+                  />
                 </div>
                 <div className={styles.paginationContainer}>
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(page - 1)} disabled={!prev} >Prev</button>

@@ -53,12 +53,12 @@ export enum StatusLabel {
   ANY = 'Any',
   ALIVE = 'Alive',
   DEAD = 'Dead',
-  UNKOWN = 'Unkown',
+  UNKOWN = 'Unknown',
 }
 
 export enum StatusValue {
   ANY = '',
   ALIVE = 'alive',
   DEAD = 'dead',
-  UNKOWN = 'unkown',
+  UNKOWN = 'unknown',
 }
