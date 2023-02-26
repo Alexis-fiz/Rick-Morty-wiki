@@ -1,17 +1,26 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getCharacters } from '../../api/characters';
+import { ICharacter, Nullable, IInfo } from '../../helpers/types';
 
 export interface CharactersState {
-  info: any;
+  info: IInfo;
   page: number;
   loading: boolean;
-  character: any | null;
-  characters: any[];
-  allCharacters: any;
+  character: Nullable<ICharacter>;
+  characters: ICharacter[];
+  allCharacters: Record<string, ICharacter[]>;
 }
 
+const initInfo = {
+  count: 0,
+  pages: 0,
+  prev: null,
+  next: null,
+}
+
+
 const initialState: CharactersState = {
-  info: 0,
+  info: initInfo,
   page: 1,
   loading: false,
   character: null,

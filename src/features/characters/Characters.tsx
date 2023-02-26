@@ -1,24 +1,27 @@
 import { useEffect, useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
-import Select from 'react-select';
+import Select, { SingleValue } from 'react-select';
 import { useSearchParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { getAllCharactersAsync, setShowCharacters } from './charactersSlice';
 
-import CharacterTile from './CharacterTile'
+import CharacterTile from './CharacterTile';
 import styles from './Characters.module.css';
 
+import { IOption, Nullable, StatusLabel, StatusValue } from '../../helpers/types';
+
 const options = [
-  {label: 'Alive', value: 'alive'},
-  {label: 'Dead', value: 'dead'},
-  {label: 'Unknown', value: 'unknown'},
-  {label: 'No select', value: undefined}
+  {label: StatusLabel.ANY, value: StatusValue.ANY},
+  {label: StatusLabel.ALIVE, value: StatusValue.ALIVE},
+  {label: StatusLabel.DEAD, value: StatusValue.DEAD},
+  {label: StatusLabel.UNKOWN, value: StatusValue.UNKOWN},
 ]
 const initialPage = 1;
+const defaultOption = options[0];
 
 export default function Characters() {
-    const [statusSelected, setStatusSelected] = useState<any>();
-    const [searchValue, setSearchValue] = useState<any>('');
+    const [statusSelected, setStatusSelected] = useState<SingleValue<IOption>>(defaultOption);
+    const [searchValue, setSearchValue] = useState<string>('');
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -29,58 +32,68 @@ export default function Characters() {
 
     const info = useAppSelector((state) => state.characters.info);
     const {pages, next, prev} = info;  
+
+    function getUrlParams(_page: Nullable<number> = null, _query: Nullable<string> = null, _status: Nullable<string> = null) {
+      let paramsUrl: any = {page: _page};
+      if (_query) {
+        paramsUrl = {...paramsUrl, name: _query};
+      };
+      if (_status) {
+        paramsUrl = {...paramsUrl, status: _status};
+      };
+      return paramsUrl;
+    }
     
     useEffect(() => {
       const currentStatus = searchParams.get('status');
       const currentPage = parseInt(searchParams.get('page')!) || initialPage;
       const statusFound = options.find(st => st.value === currentStatus);
-      const currentQuery = searchParams.get('name');
-
-      setStatusSelected(statusFound);
+      const currentQuery = searchParams.get('name') || '';
+      console.log('useEffect');
+      setStatusSelected(statusFound!);
       setSearchValue(currentQuery);
-      dispatch(getAllCharactersAsync({page: currentPage, name: currentQuery, status: currentStatus}));
-    }, [])
+      dispatch(getAllCharactersAsync(getUrlParams(currentPage, currentQuery, currentStatus)));
+    }, [dispatch, searchParams])
 
     function onClickPagination(newPage: number) {
         if(newPage <= 0 || newPage > pages) return;
-        setSearchParams({ page: newPage.toString(), name: searchValue, status: statusSelected?.value })
+        const params = getUrlParams(newPage, searchValue, statusSelected?.value);
+        setSearchParams(params)
         const charactersInPage = allCharacters[newPage];
         if(charactersInPage && (!statusSelected?.value && !searchValue)) {
           dispatch(setShowCharacters({page: newPage, characters: charactersInPage}));
           return;
         }
-        dispatch(getAllCharactersAsync({page: newPage, name: searchValue, status: statusSelected?.value}))
+        dispatch(getAllCharactersAsync(params));
     }
     
-    function onChangeStatus(status: any) {
+    async function onChangeStatus(status: SingleValue<IOption>) {
       setStatusSelected(status);
-      dispatch(getAllCharactersAsync({name: searchValue, status: status?.value, page: initialPage}))
-      if(!status.value) {
-        setSearchParams({  page: page.toString(), name: searchValue });
-        return;
-      }
-      setSearchParams({  page: page.toString(), name: searchValue, status: status.value });
+      const params = getUrlParams(initialPage, searchValue, status?.value);
+      setSearchParams(params);
+      dispatch(getAllCharactersAsync(params));
     }
 
-    function handleDebouncefn(value: any) {
+    function handleDebouncefn(value: string, status: SingleValue<IOption>) {
+      const params = getUrlParams(initialPage, value, status?.value);
       if (!value.length) {
-        dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}));
-        setSearchParams({page: initialPage.toString(), status: statusSelected?.value})
+        dispatch(getAllCharactersAsync(params));
+        setSearchParams(params)
         return;
       }
       if (value.length < 4) return;
-      setSearchParams({page: initialPage.toString(), name: value, status: statusSelected?.value})
-      dispatch(getAllCharactersAsync({name: value, status: statusSelected?.value, page: initialPage}))
+      setSearchParams(params)
+      dispatch(getAllCharactersAsync(params))
     }
 
     const debouncedChangeHandler = useCallback(
       debounce(handleDebouncefn, 500)
     , []);
 
-    function onChangeInput(e: any) {
+    function onChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
       const { value } = e.target;
       setSearchValue(value);
-      debouncedChangeHandler(value);
+      debouncedChangeHandler(value, statusSelected);
     }
 
     return (
@@ -98,7 +111,7 @@ export default function Characters() {
                   <button className={styles.currentPage} disabled >{page}</button>
                   {page + 1 < pages && <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)}>{page + 1}</button>}
                   {page + 2 < pages && <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 2)}>{page + 2}</button>}
-                  <button className={styles.paginationBtn} onClick={() => onClickPagination(pages)}>{pages}</button>
+                  {page !== pages && <button className={styles.paginationBtn} onClick={() => onClickPagination(pages)}>{pages}</button>}
                   <button className={styles.paginationBtn} onClick={() => onClickPagination(page + 1)} disabled={!next}>Next</button>
                 </div>
                 <div className={styles.heroImage}>
