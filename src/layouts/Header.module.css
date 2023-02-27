@@ -1,0 +1,9 @@
+.headerContainer {
+    background-color: #000;
+    padding: 10px 44px;
+}
+
+.headerTitle {
+    font-size: 32px;
+    color: #64ffda;
+}

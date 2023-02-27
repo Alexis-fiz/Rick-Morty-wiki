@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: calc(50vh - 60px);
+  height: calc(35vh - 60px);
   text-align: center;
   position: relative;
   background-color: rgb(32, 35, 41);
