@@ -1,10 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 import { Counter } from './features/counter/Counter';
-import Characters from './features/Characters/Characters';
-import Character from './features/Charactrer/Character';
+import Characters from './features/characters/Characters';
+import Character from './features/character/Character';
 
 import './App.css';
 import Header from "./layouts/Header";
+import GuessGame from "./features/guess-game/GuessGame";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route index element={<Counter />} />
           <Route path="characters" element={<Characters />} />
           <Route path="characters/:id" element={<Character />} />
+          <Route path="guess-game" element={<GuessGame />} />
         </Route >
 
       </Routes>

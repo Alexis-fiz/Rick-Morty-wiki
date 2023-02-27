@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { selectCharacter } from '../Charactrer/characterSlice';
+import { selectCharacter } from '../character/characterSlice';
 import { useAppDispatch } from '../../app/hooks';
 
 import styles from './Characters.module.css'
