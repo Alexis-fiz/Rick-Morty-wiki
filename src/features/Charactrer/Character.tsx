@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { getCharacterAsync, selectCharacter } from './characterSlice';
 import styles from './Character.module.css'
-import { getEpisodesForCharacter } from '../../api/characters';
+import { getEpisodesForCharacter } from '../Characters/api/characters';
 import { ICharacter } from '../../helpers/types';
 
 export default function Character() {
@@ -26,7 +26,8 @@ export default function Character() {
       dispatch(getCharacterAsync(id))
     }
     getData();
-  }, [])
+  }, [character.id, characters, dispatch, id])
+
   if (!character) return null;
 
   return (

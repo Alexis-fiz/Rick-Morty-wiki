@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { selectCharacter } from '../Charactrer/characterSlice';
 import { useAppDispatch } from '../../app/hooks';
-import { ICharacter } from "../../helpers/types";
+import { ICharacter } from '../../helpers/types';
 import styles from './Characters.module.css'
 
-export default function CharacterTile({character}: {character: ICharacter}) {
+export default function CharacterTile({ character }: {character: ICharacter}) {
   const dispatch = useAppDispatch();
 
-  const statusColor = character.status === 'Alive' ? {backgroundColor: 'rgb(85, 204, 68)'}: {backgroundColor: 'rgb(214, 61, 46)'};
+  const statusColor = character.status === 'Alive' ? { backgroundColor: 'rgb(85, 204, 68)' }: { backgroundColor: 'rgb(214, 61, 46)' };
   return (
     <li key={character.id} className={styles.listItem} >
       <img className={styles.tileImage} src={character.image} alt={character.name} />
@@ -23,5 +23,5 @@ export default function CharacterTile({character}: {character: ICharacter}) {
         <Link className={styles.tileLink} to={`/characters/${character.id}`} onClick={() => dispatch(selectCharacter(character))}>{character?.firstEpisode?.name}</Link>
       </div>
     </li>
-    )
+  )
 }

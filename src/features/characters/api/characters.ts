@@ -1,6 +1,6 @@
-import { API_URL } from "../helpers/constants";
+import { API_URL } from '../../../helpers/constants';
 import axios from 'axios';
-import { ICharacter, IParams } from "../helpers/types";
+import { ICharacter, IParams } from '../../../helpers/types';
 
 
 export async function getCharacters(params: IParams) {

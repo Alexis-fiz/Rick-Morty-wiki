@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getCharacter } from '../../api/characters';
+import { getCharacter } from '../Characters/api/characters';
 
 export interface CharacterState {
   loading: boolean;

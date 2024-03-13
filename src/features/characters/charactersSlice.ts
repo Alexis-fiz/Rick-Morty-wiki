@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getCharacters } from '../../api/characters';
+import { getCharacters } from './api/characters';
 import { ICharacter, Nullable, IInfo } from '../../helpers/types';
 
 export interface CharactersState {
