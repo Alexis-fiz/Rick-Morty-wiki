@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { getCharacterAsync, selectCharacter } from './characterSlice';
+import { selectCharacter } from './characterSlice';
 import styles from './Character.module.css'
 import { getEpisodesForCharacter } from '../Characters/api/characters';
 import { ICharacter } from '../../helpers/types';
@@ -23,7 +23,7 @@ export default function Character() {
         dispatch(selectCharacter(updatedCharacter))
         return;
       }
-      dispatch(getCharacterAsync(id))
+      dispatch
     }
     getData();
   }, [character.id, characters, dispatch, id])

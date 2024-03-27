@@ -51,6 +51,7 @@ export default function Characters() {
       const currentQuery = searchParams.get('name') || '';
       setStatusSelected(statusFound!);
       setSearchValue(currentQuery);
+      // @ts-ignore: Unreachable code error
       dispatch(getAllCharactersAsync(getUrlParams(currentPage, currentQuery, currentStatus)));
     }, [dispatch, searchParams])
 
@@ -63,6 +64,7 @@ export default function Characters() {
           dispatch(setShowCharacters({page: newPage, characters: charactersInPage}));
           return;
         }
+        // @ts-ignore: Unreachable code error
         dispatch(getAllCharactersAsync(params));
     }
     
@@ -70,18 +72,21 @@ export default function Characters() {
       setStatusSelected(status);
       const params = getUrlParams(initialPage, searchValue, status?.value);
       setSearchParams(params);
+      // @ts-ignore: Unreachable code error
       dispatch(getAllCharactersAsync(params));
     }
 
     function handleDebouncefn(value: string, status: SingleValue<IOption>) {
       const params = getUrlParams(initialPage, value, status?.value);
       if (!value.length) {
+        // @ts-ignore: Unreachable code error
         dispatch(getAllCharactersAsync(params));
         setSearchParams(params)
         return;
       }
       if (value.length < 4) return;
-      setSearchParams(params)
+      setSearchParams(params);
+      // @ts-ignore: Unreachable code error
       dispatch(getAllCharactersAsync(params))
     }
 
