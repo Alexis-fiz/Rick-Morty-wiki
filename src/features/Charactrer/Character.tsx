@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { fetchCharacter, selectCharacter } from './characterSlice';
+import { fetchCharacter } from './characterSlice';
 import styles from './Character.module.css'
-import { getEpisodesForCharacter } from '../Characters/api/characters';
 import { ICharacter } from '../../helpers/types';
 
 export default function Character() {
@@ -11,22 +10,11 @@ export default function Character() {
 
   const dispatch = useAppDispatch();
   const character: ICharacter = useAppSelector(state => state.character.character);
-  const allCharacters: Record<string, ICharacter[]> = useAppSelector(state => state.characters.allCharacters);
-  const characters = Object.values(allCharacters).flat();
 
 
   useEffect(() => {
-    async function getData() {
-      // const characterFound = characters.find((char: ICharacter) => char.id === character.id);
-      // if (characterFound) {
-      //   const updatedCharacter = await getEpisodesForCharacter(characterFound)
-      //   dispatch(selectCharacter(updatedCharacter))
-      //   return;
-      // }
-      // @ts-ignore
-      dispatch(fetchCharacter(id));
-    }
-    getData();
+    // @ts-ignore
+    dispatch(fetchCharacter(id));
   }, [dispatch, id])
 
   if (!character) return null;

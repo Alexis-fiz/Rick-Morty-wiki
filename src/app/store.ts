@@ -1,5 +1,5 @@
 
-import { configureStore, getDefaultMiddleware  } from '@reduxjs/toolkit';
+import { configureStore  } from '@reduxjs/toolkit';
 import { createEpicMiddleware } from 'redux-observable';
 import { rootEpic } from '../epics';
 import charactersReducer from '../features/Characters/charactersSlice';
@@ -13,8 +13,8 @@ export const store = configureStore({
     character: characterReducer
   },
     // @ts-ignore:
-    middleware: [...getDefaultMiddleware(), epicMiddleware]
-});
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(epicMiddleware),
+  });
 
 epicMiddleware.run(rootEpic);
 
