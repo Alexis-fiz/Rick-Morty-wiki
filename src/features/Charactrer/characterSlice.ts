@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CharacterState {
-  character: any; // Define your character type here
+  character: any;
   loading: boolean;
   error: string | null;
 }

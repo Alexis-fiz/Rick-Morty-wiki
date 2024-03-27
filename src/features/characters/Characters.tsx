@@ -29,7 +29,6 @@ export default function Characters() {
     const page = useAppSelector((state) => state.characters.page);
     const characters = useAppSelector((state) => state.characters.characters);
     const allCharacters = useAppSelector((state) => state.characters.allCharacters);
-
     const info = useAppSelector((state) => state.characters.info);
     const {pages, next, prev} = info;  
 

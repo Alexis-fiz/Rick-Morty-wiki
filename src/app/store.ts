@@ -1,8 +1,7 @@
 
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware  } from '@reduxjs/toolkit';
 import { createEpicMiddleware } from 'redux-observable';
 import { rootEpic } from '../epics';
-import counterReducer from '../features/counter/counterSlice';
 import charactersReducer from '../features/Characters/charactersSlice';
 import characterReducer from '../features/Charactrer/characterSlice';
 
@@ -10,12 +9,11 @@ const epicMiddleware = createEpicMiddleware();
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     characters: charactersReducer,
     character: characterReducer
   },
     // @ts-ignore:
-    middleware: [epicMiddleware]
+    middleware: [...getDefaultMiddleware(), epicMiddleware]
 });
 
 epicMiddleware.run(rootEpic);

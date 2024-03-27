@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectCharacter } from './characterSlice';
+import { fetchCharacter, selectCharacter } from './characterSlice';
 import styles from './Character.module.css'
 import { getEpisodesForCharacter } from '../Characters/api/characters';
 import { ICharacter } from '../../helpers/types';
@@ -17,16 +17,17 @@ export default function Character() {
 
   useEffect(() => {
     async function getData() {
-      const characterFound = characters.find((char: ICharacter) => char.id === character.id);
-      if (characterFound) {
-        const updatedCharacter = await getEpisodesForCharacter(characterFound)
-        dispatch(selectCharacter(updatedCharacter))
-        return;
-      }
-      dispatch
+      // const characterFound = characters.find((char: ICharacter) => char.id === character.id);
+      // if (characterFound) {
+      //   const updatedCharacter = await getEpisodesForCharacter(characterFound)
+      //   dispatch(selectCharacter(updatedCharacter))
+      //   return;
+      // }
+      // @ts-ignore
+      dispatch(fetchCharacter(id));
     }
     getData();
-  }, [character.id, characters, dispatch, id])
+  }, [dispatch, id])
 
   if (!character) return null;
 
